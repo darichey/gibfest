@@ -42,7 +42,7 @@ data = PackedVector3Array(15, 0, 15, -15, 0, 15, 15, 0, -15, -15, 0, 15, -15, 0,
 environment = SubResource("Environment_d110p")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 14.0975, 17.4204, -13.5483)
 shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_glaeu")]
@@ -53,21 +53,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 [node name="Camera3D" type="Camera3D" parent="Player/Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+[node name="SpeedLabel" type="Label" parent="Player"]
+offset_left = 7.0
+offset_top = 891.0
+offset_right = 1919.0
+offset_bottom = 947.0
+theme_type_variation = &"HeaderLarge"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Cube" type="MeshInstance3D" parent="."]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 10, 1.5, 0)
 mesh = SubResource("BoxMesh_rpjmg")
 surface_material_override/0 = SubResource("StandardMaterial3D_qqy0c")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D2"]
+[node name="StaticBody3D" type="StaticBody3D" parent="Cube"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Cube/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_0h0bt")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_dntfm")
 surface_material_override/0 = SubResource("StandardMaterial3D_arh85")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_sxi1f")

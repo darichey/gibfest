@@ -52,7 +52,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
 		$Head.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
 		$Head.rotation.x = clampf($Head.rotation.x, -deg_to_rad(70), deg_to_rad(70))
+		
+func update_speed_text() -> void:
+	var xz_plane := Plane(Vector3(0, 1, 0))
+	var xz_velocity := xz_plane.project(velocity)
+	$SpeedLabel.text = "Speed: %.2f" % (xz_velocity.length())
 
 func _physics_process(delta: float) -> void:
 	velocity = get_next_velocity(delta)
 	move_and_slide()
+	update_speed_text()
