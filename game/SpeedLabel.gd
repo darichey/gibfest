@@ -3,5 +3,5 @@ extends Label
 @onready var player = $"../.."
 
 func _process(delta: float) -> void:
-	var xz_velocity = player.get_xz_velocity()
-	text = "Speed: %.2f" % (xz_velocity.length())
+	var xz_speed = Plane.PLANE_XZ.project(player.velocity).length()
+	text = "Speed: %.2f" % xz_speed

@@ -14,8 +14,13 @@ func draw_vector(from: Vector3, to: Vector3, color: Color) -> void:
 func _draw() -> void:
 	draw_vector(
 		player.global_transform.origin,
-		player.global_transform.origin + player.get_xz_velocity(),
+		player.global_transform.origin + Plane.PLANE_XZ.project(player.velocity),
 		Color.GREEN
+	)
+	draw_vector(
+		player.global_transform.origin,
+		player.global_transform.origin + player.debug_wishdir,
+		Color.BLUE
 	)
 
 func _process(delta: float) -> void:
