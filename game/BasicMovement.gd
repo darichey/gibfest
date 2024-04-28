@@ -34,9 +34,7 @@ static func get_next_walk_velocity(cur_vel: Vector3, wishdir: Vector3, delta: fl
 	else:
 		return wishdir * WALK_SPEED
 
-static func move(cur_vel: Vector3, wishvel: Vector3, onground: bool, delta: float) -> Vector3:
-	var wishdir := wishvel.normalized()
-	
+static func move(cur_vel: Vector3, wishdir: Vector3, onground: bool, delta: float) -> Vector3:
 	var gravity := get_next_gravity_velocity(cur_vel, onground, delta)
 	var jump := get_next_jump_velocity(onground, delta)
 	var walk := get_next_walk_velocity(cur_vel, wishdir, delta)

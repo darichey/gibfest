@@ -17,11 +17,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var wishvel := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	var wishdir := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
-	debug_wishdir = wishvel.normalized()
+	debug_wishdir = wishdir
 	
-	velocity = BasicMovement.move(velocity, wishvel, is_on_floor(), delta)
+	velocity = QuakeMovement.move(velocity, wishdir, is_on_floor(), delta)
 	move_and_slide()
 	
 func toggle_debug() -> void:

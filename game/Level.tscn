@@ -56,6 +56,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_qqy0c")
 shape = SubResource("ConcavePolygonShape3D_0h0bt")
 
 [node name="Floor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, 0, 0)
 mesh = SubResource("PlaneMesh_dntfm")
 surface_material_override/0 = SubResource("StandardMaterial3D_arh85")
 
