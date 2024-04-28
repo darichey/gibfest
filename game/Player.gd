@@ -1,13 +1,12 @@
 extends CharacterBody3D
 
-const AUTO_HOP := true
-const WALK_SPEED := 6.5
-const JUMP_SPEED := 4.5
-const MOUSE_SENSITIVITY := 0.002
+@export var auto_hop: bool = true
+@export var walk_speed: float = 6.5
+@export var jump_speed: float = 4.5
+@export var mouse_sensitivity: float = 0.002
+@export var debug: bool = false
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-
-var debug := false
 
 func get_next_gravity_velocity(delta: float) -> Vector3:
 	if not is_on_floor():
@@ -16,14 +15,14 @@ func get_next_gravity_velocity(delta: float) -> Vector3:
 		return Vector3.ZERO
 
 func should_jump() -> bool:
-	if AUTO_HOP:
+	if auto_hop:
 		return Input.is_action_pressed("move_jump") and is_on_floor()
 	else:
 		return Input.is_action_just_pressed("move_jump") and is_on_floor()
 
 func get_next_jump_velocity() -> Vector3:
 	if should_jump():
-		return Vector3.UP * JUMP_SPEED
+		return Vector3.UP * jump_speed
 	else:
 		return Vector3.ZERO
 
@@ -33,12 +32,12 @@ func get_next_walk_velocity() -> Vector3:
 	
 	if direction == Vector3.ZERO:
 		return Vector3(
-			move_toward(velocity.x, 0, WALK_SPEED),
+			move_toward(velocity.x, 0, walk_speed),
 			0,
-			move_toward(velocity.z, 0, WALK_SPEED)
+			move_toward(velocity.z, 0, walk_speed)
 		)
 	else:
-		return direction * WALK_SPEED
+		return direction * walk_speed
 
 func get_next_velocity(delta: float) -> Vector3:
 	var gravity := get_next_gravity_velocity(delta)
@@ -51,9 +50,9 @@ func _ready() -> void:
 	
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
+		rotate_y(-event.relative.x * mouse_sensitivity)
 		if not debug:
-			$Head.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
+			$Head.rotate_x(-event.relative.y * mouse_sensitivity)
 			$Head.rotation.x = clampf($Head.rotation.x, -deg_to_rad(70), deg_to_rad(70))
 
 func _physics_process(delta: float) -> void:
