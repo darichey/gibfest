@@ -1,12 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://341t63onpo4w"]
+[gd_scene load_steps=6 format=3 uid="uid://341t63onpo4w"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_0m806"]
+[ext_resource type="Script" path="res://SpeedLabel.gd" id="2_wyhm1"]
+[ext_resource type="Script" path="res://VelocityVisual.gd" id="3_1mth0"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mvex6"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yf3nb"]
 
-[node name="CharacterBody3D" type="CharacterBody3D"]
+[node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_0m806")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -14,3 +16,27 @@ mesh = SubResource("CapsuleMesh_mvex6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_yf3nb")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+
+[node name="DebugOverlay" type="CanvasLayer" parent="."]
+
+[node name="SpeedLabel" type="Label" parent="DebugOverlay"]
+offset_left = 7.0
+offset_top = 891.0
+offset_right = 1919.0
+offset_bottom = 947.0
+theme_type_variation = &"HeaderLarge"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("2_wyhm1")
+
+[node name="VelocityVisual" type="Control" parent="DebugOverlay"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_1mth0")

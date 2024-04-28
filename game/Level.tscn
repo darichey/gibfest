@@ -1,10 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://ds4bqcgwfr0kj"]
+[gd_scene load_steps=13 format=3 uid="uid://ds4bqcgwfr0kj"]
 
 [ext_resource type="PackedScene" uid="uid://341t63onpo4w" path="res://Player.tscn" id="1_glaeu"]
-[ext_resource type="Script" path="res://SpeedLabel.gd" id="2_6xfkj"]
 [ext_resource type="Texture2D" uid="uid://dq60nk0vg0v2q" path="res://addons/kenney_prototype_textures/dark/texture_08.png" id="2_gmtcp"]
 [ext_resource type="Texture2D" uid="uid://cs5cl44e37wtt" path="res://addons/kenney_prototype_textures/orange/texture_09.png" id="2_m6syr"]
-[ext_resource type="Script" path="res://VelocityVisual.gd" id="3_64w8f"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_dpif3"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -47,33 +45,6 @@ environment = SubResource("Environment_d110p")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 14.0975, 17.4204, -13.5483)
 shadow_enabled = true
 
-[node name="Player" parent="." instance=ExtResource("1_glaeu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-
-[node name="DebugOverlay" type="CanvasLayer" parent="Player"]
-
-[node name="SpeedLabel" type="Label" parent="Player/DebugOverlay"]
-offset_left = 7.0
-offset_top = 891.0
-offset_right = 1919.0
-offset_bottom = 947.0
-theme_type_variation = &"HeaderLarge"
-horizontal_alignment = 1
-vertical_alignment = 1
-script = ExtResource("2_6xfkj")
-
-[node name="VelocityVisual" type="Control" parent="Player/DebugOverlay"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("3_64w8f")
-
-[node name="Head" type="Node3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
-
-[node name="Camera3D" type="Camera3D" parent="Player/Head"]
-
 [node name="Cube" type="MeshInstance3D" parent="."]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 10, 1.5, 0)
 mesh = SubResource("BoxMesh_rpjmg")
@@ -92,3 +63,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_arh85")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_sxi1f")
+
+[node name="Player" parent="." instance=ExtResource("1_glaeu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.47136, 0)
