@@ -1,7 +1,7 @@
 extends Control
 
-@onready var player = $"../.."
-@onready var camera = $"../../Head/Camera3D"
+@onready var player: CharacterBody3D = $"../.."
+@onready var camera: Camera3D = $"../../Head/Camera3D"
 
 func draw_vector(from: Vector3, to: Vector3, color: Color) -> void:
 	draw_line(
