@@ -1,8 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://ds4bqcgwfr0kj"]
+[gd_scene load_steps=21 format=3 uid="uid://ds4bqcgwfr0kj"]
 
 [ext_resource type="PackedScene" uid="uid://341t63onpo4w" path="res://Player.tscn" id="1_glaeu"]
 [ext_resource type="Texture2D" uid="uid://dq60nk0vg0v2q" path="res://addons/kenney_prototype_textures/dark/texture_08.png" id="2_gmtcp"]
 [ext_resource type="Texture2D" uid="uid://cs5cl44e37wtt" path="res://addons/kenney_prototype_textures/orange/texture_09.png" id="2_m6syr"]
+[ext_resource type="Texture2D" uid="uid://dco0nx2hf7rq1" path="res://addons/kenney_prototype_textures/green/texture_09.png" id="4_ocdbp"]
+[ext_resource type="Texture2D" uid="uid://g0y8onvru41r" path="res://addons/kenney_prototype_textures/purple/texture_09.png" id="5_7golv"]
+[ext_resource type="Texture2D" uid="uid://b2ud8ui3syyhj" path="res://addons/kenney_prototype_textures/red/texture_09.png" id="6_clx6d"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_dpif3"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -36,6 +39,24 @@ uv1_scale = Vector3(10, 10, 10)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_sxi1f"]
 data = PackedVector3Array(15, 0, 15, -15, 0, 15, 15, 0, -15, -15, 0, 15, -15, 0, -15, 15, 0, -15)
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_broj3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kfh02"]
+albedo_texture = ExtResource("4_ocdbp")
+uv1_scale = Vector3(10, 10, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vp5ot"]
+albedo_texture = ExtResource("5_7golv")
+uv1_scale = Vector3(10, 10, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jp5w6"]
+albedo_texture = ExtResource("6_clx6d")
+uv1_scale = Vector3(10, 10, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bp54y"]
+albedo_texture = ExtResource("2_m6syr")
+uv1_scale = Vector3(10, 10, 10)
+
 [node name="World" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -46,7 +67,7 @@ transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75
 shadow_enabled = true
 
 [node name="Cube" type="MeshInstance3D" parent="."]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 10, 1.5, 0)
+transform = Transform3D(25, 0, 0, 0, 5, 0, 0, 0, 25, 0, 3, 0)
 mesh = SubResource("BoxMesh_rpjmg")
 surface_material_override/0 = SubResource("StandardMaterial3D_qqy0c")
 
@@ -66,4 +87,24 @@ surface_material_override/0 = SubResource("StandardMaterial3D_arh85")
 shape = SubResource("ConcavePolygonShape3D_sxi1f")
 
 [node name="Player" parent="." instance=ExtResource("1_glaeu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+
+[node name="Green Wall" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-06, -1, 0, 100, -4.37114e-08, 0, 0, 0, 1000, 1500, 150, 0)
+mesh = SubResource("PlaneMesh_broj3")
+surface_material_override/0 = SubResource("StandardMaterial3D_kfh02")
+
+[node name="Purple Wall" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-06, 1, 0, -100, -4.37114e-08, 0, 0, 0, 1000, -1500, 150, 0)
+mesh = SubResource("PlaneMesh_broj3")
+surface_material_override/0 = SubResource("StandardMaterial3D_vp5ot")
+
+[node name="Red Wall" type="MeshInstance3D" parent="."]
+transform = Transform3D(1000, 0, 0, 0, -4.37114e-08, -100, 0, 1, -4.37114e-06, 0, 150, -1500)
+mesh = SubResource("PlaneMesh_broj3")
+surface_material_override/0 = SubResource("StandardMaterial3D_jp5w6")
+
+[node name="Orange Wall" type="MeshInstance3D" parent="."]
+transform = Transform3D(1000, 0, 0, 0, -4.37114e-08, 100, 0, -1, -4.37114e-06, 0, 150, 1500)
+mesh = SubResource("PlaneMesh_broj3")
+surface_material_override/0 = SubResource("StandardMaterial3D_bp54y")
