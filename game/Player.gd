@@ -21,7 +21,7 @@ func _physics_process(delta: float) -> void:
 	
 	debug_wishdir = wishdir
 	
-	velocity = QuakeMovement.move(velocity, Vector2(wishdir.x, wishdir.z), is_on_floor(), delta)
+	velocity = QuakeMovement.move(velocity, wishdir, is_on_floor(), delta)
 	move_and_slide()
 	
 func toggle_debug() -> void:
