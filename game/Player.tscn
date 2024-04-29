@@ -1,8 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://341t63onpo4w"]
+[gd_scene load_steps=11 format=3 uid="uid://341t63onpo4w"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_0m806"]
 [ext_resource type="Script" path="res://SpeedLabel.gd" id="2_wyhm1"]
 [ext_resource type="Script" path="res://VelocityVisual.gd" id="3_1mth0"]
+[ext_resource type="Texture2D" uid="uid://w001nncrj1o8" path="res://arrow.svg" id="4_7nhjn"]
+[ext_resource type="Script" path="res://ControlsVisual.gd" id="4_hovwt"]
+[ext_resource type="Texture2D" uid="uid://rrnutjdlr04y" path="res://filled_arrow.svg" id="6_758ab"]
+[ext_resource type="Texture2D" uid="uid://dh2r5e1fxhimt" path="res://rect.svg" id="7_fia05"]
+[ext_resource type="Texture2D" uid="uid://cegpse67d6jyf" path="res://filled_rect.svg" id="8_qvruy"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mvex6"]
 
@@ -37,6 +42,82 @@ script = ExtResource("2_wyhm1")
 [node name="VelocityVisual" type="Control" parent="DebugOverlay"]
 layout_mode = 3
 anchors_preset = 0
+offset_right = 27.0
+offset_bottom = 26.0
+script = ExtResource("3_1mth0")
+
+[node name="ControlsVisual" type="Control" parent="DebugOverlay"]
+layout_mode = 3
+anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("3_1mth0")
+script = ExtResource("4_hovwt")
+arrow_unpressed_texture = ExtResource("4_7nhjn")
+arrow_pressed_texture = ExtResource("6_758ab")
+jump_unpressed_texture = ExtResource("7_fia05")
+jump_pressed_texture = ExtResource("8_qvruy")
+
+[node name="ForwardRect" type="BoxContainer" parent="DebugOverlay/ControlsVisual"]
+layout_mode = 0
+offset_left = 100.0
+offset_right = 200.0
+offset_bottom = 100.0
+
+[node name="TextureRect" type="TextureRect" parent="DebugOverlay/ControlsVisual/ForwardRect"]
+layout_mode = 2
+texture = ExtResource("4_7nhjn")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="BackRect" type="BoxContainer" parent="DebugOverlay/ControlsVisual"]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 200.0
+offset_right = 300.0
+offset_bottom = 300.0
+rotation = 3.14159
+
+[node name="TextureRect" type="TextureRect" parent="DebugOverlay/ControlsVisual/BackRect"]
+layout_mode = 2
+texture = ExtResource("4_7nhjn")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="LeftRect" type="BoxContainer" parent="DebugOverlay/ControlsVisual"]
+layout_mode = 0
+offset_top = 200.0
+offset_right = 100.0
+offset_bottom = 300.0
+rotation = -1.5708
+
+[node name="TextureRect" type="TextureRect" parent="DebugOverlay/ControlsVisual/LeftRect"]
+layout_mode = 2
+texture = ExtResource("4_7nhjn")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="RightRect" type="BoxContainer" parent="DebugOverlay/ControlsVisual"]
+layout_mode = 0
+offset_left = 300.0
+offset_top = 100.0
+offset_right = 400.0
+offset_bottom = 200.0
+rotation = 1.5708
+
+[node name="TextureRect" type="TextureRect" parent="DebugOverlay/ControlsVisual/RightRect"]
+layout_mode = 2
+texture = ExtResource("4_7nhjn")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="JumpRect" type="BoxContainer" parent="DebugOverlay/ControlsVisual"]
+layout_mode = 0
+offset_left = 100.0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 300.0
+
+[node name="TextureRect" type="TextureRect" parent="DebugOverlay/ControlsVisual/JumpRect"]
+layout_mode = 2
+texture = ExtResource("7_fia05")
+expand_mode = 3
