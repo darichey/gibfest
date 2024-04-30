@@ -21,7 +21,24 @@ func _physics_process(delta: float) -> void:
 	
 	debug_wishdir = wishdir
 	
-	velocity = QuakeMovement.move(velocity, wishdir, is_on_floor(), delta)
+	velocity = QuakeMovement.move(wishdir, velocity, is_on_floor(), delta)
+	
+	# var forward = -transform.basis.z
+	# var right = transform.basis.x
+	# var forwardmove = Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
+	# var sidemove = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+		
+	# var wishvel = Vector3(
+	# 	forward.x * forwardmove * QuakeMovement.FORWARD_SPEED + right.x * sidemove * QuakeMovement.SIDE_SPEED,
+	# 	0,
+	# 	forward.z * forwardmove * QuakeMovement.FORWARD_SPEED + right.z * sidemove * QuakeMovement.SIDE_SPEED
+	# )
+	# debug_wishdir = wishvel.normalized()
+	
+	# velocity = QuakeMovement.move(velocity, forward, right, forwardmove, sidemove, is_on_floor(), delta)
+	
+	
+	
 	move_and_slide()
 	
 func toggle_debug() -> void:

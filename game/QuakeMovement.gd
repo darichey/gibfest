@@ -1,50 +1,56 @@
 extends Object
 class_name QuakeMovement
 
-### horizontal movement ###
-const WALK_SPEED: float = 10
-const FRICTION: float = 4
-const STOP_SPEED: float = 100
-const MAX_SPEED: float = 320
-const ACCELERATE: float = 100
+#const MULTIPLIER = 1
+#const sv_friction: float = 5.2 * MULTIPLIER
+#const sv_accelerate: float = 5.6 * MULTIPLIER
+#const sv_maxspeed: float = 320 * MULTIPLIER
+#const sv_airaccelerate: float = 12 * MULTIPLIER
+#const sv_maxairspeed: float = 320 * MULTIPLIER
 
-static func apply_friction(cur_vel: Vector3, delta: float) -> Vector3:
-	var speed := cur_vel.length()
-	if speed < 1:
-		return Vector3.ZERO
+const sv_friction: float = 4.0
+const sv_accelerate: float = 100.0
+const sv_maxspeed: float = 10.0
+const sv_airaccelerate: float = 100.0
+const sv_maxairspeed: float = 10.0
+
+static func accelerate(accelDir: Vector3, prevVelocity: Vector3, accelerate: float, max_velocity: float, delta: float) -> Vector3:
+	prevVelocity.y = 0
+	var projVel = prevVelocity.dot(accelDir)
+	var accelVel = clampf(max_velocity - projVel, 0, accelerate * delta)
 	
-	var drop := speed * FRICTION * delta
-	return cur_vel * max(speed - drop, 0) / speed
+	return prevVelocity + accelDir * accelVel
 
-static func accelerate(cur_vel: Vector3, wishdir: Vector3, max_speed: float, delta: float) -> Vector3:
-	var currentspeed := cur_vel.dot(wishdir)
-	var addspeed := WALK_SPEED - currentspeed
-	if addspeed <= 0:
-		return cur_vel
-	var accelspeed := minf(ACCELERATE * WALK_SPEED * delta, addspeed)
-	return cur_vel + accelspeed * wishdir
+static func move_ground(accelDir: Vector3, prevVelocity: Vector3, delta: float) -> Vector3:
+	prevVelocity.y = 0
+	var speed = prevVelocity.length()
+	if speed != 0 and not Input.is_action_pressed("move_jump"):
+		var drop = speed * sv_friction * delta
+		prevVelocity *= maxf(speed - drop, 0) / speed
+		
+	return accelerate(accelDir, prevVelocity, sv_accelerate, sv_maxspeed, delta)
+	
+static func move_air(accelDir: Vector3, prevVelocity: Vector3, delta: float) -> Vector3:
+	return accelerate(accelDir, prevVelocity, sv_airaccelerate, sv_maxairspeed, delta)
 
-static func move_horizontal(cur_vel: Vector3, wishdir: Vector3, onground: bool, delta: float) -> Vector3:
-	var cur_vel_xz = Plane.PLANE_XZ.project(cur_vel)
-	var new_vel := cur_vel
+static func move(accelDir: Vector3, prevVelocity: Vector3, onground: bool, delta: float) -> Vector3:
 	if onground:
-		new_vel = apply_friction(new_vel, delta)
-		new_vel = accelerate(new_vel, wishdir, MAX_SPEED, delta)
+		return move_ground(accelDir, prevVelocity, delta) + move_vertical(prevVelocity, onground, delta)
 	else:
-		new_vel = accelerate(new_vel, wishdir, MAX_SPEED, delta)
-	
-	return new_vel
-	
-### vertical movement ###
-const AUTO_HOP := true
-const JUMP_SPEED := 4.5
+		return move_air(accelDir, prevVelocity, delta) + move_vertical(prevVelocity, onground, delta)
+
+
+
+##########
+const AUTO_HOP: bool = true
+const JUMP_SPEED: float = 4.5
 static var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-static func apply_gravity(cur_speed: float, onground: bool, delta: float) -> float:
+static func get_next_gravity_velocity(cur_vel: Vector3, onground: bool, delta: float) -> Vector3:
 	if onground:
-		return 0
+		return Vector3.ZERO
 	else:
-		return cur_speed - gravity * delta
+		return Vector3.UP * (cur_vel.y - gravity * delta)
 
 static func should_jump(onground: bool) -> bool:
 	if AUTO_HOP:
@@ -52,22 +58,11 @@ static func should_jump(onground: bool) -> bool:
 	else:
 		return Input.is_action_just_pressed("move_jump") and onground
 
-static func apply_jump(onground: bool, delta: float) -> float:
+static func get_next_jump_velocity(onground: bool, delta: float) -> Vector3:
 	if should_jump(onground):
-		return JUMP_SPEED
+		return Vector3.UP * JUMP_SPEED
 	else:
-		return 0
+		return Vector3.ZERO
 		
-static func move_vertical(cur_speed: float, onground: bool, delta: float) -> float:
-	return apply_gravity(cur_speed, onground, delta) + apply_jump(onground, delta)
-		
-### movement ###
-static func move(cur_vel: Vector3, wishdir: Vector3, onground: bool, delta: float) -> Vector3:
-	var horizonal := move_horizontal(cur_vel, wishdir, onground, delta)
-	var vertical := move_vertical(cur_vel.y, onground, delta)
-	
-	return Vector3(
-		horizonal.x,
-		vertical,
-		horizonal.z
-	)
+static func move_vertical(cur_vel: Vector3, onground: bool, delta: float) -> Vector3:
+	return get_next_gravity_velocity(cur_vel, onground, delta) + get_next_jump_velocity(onground, delta)
