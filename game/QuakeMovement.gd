@@ -24,6 +24,10 @@ static func accelerate(accelDir: Vector3, prevVelocity: Vector3, accelerate: flo
 static func move_ground(accelDir: Vector3, prevVelocity: Vector3, delta: float) -> Vector3:
 	prevVelocity.y = 0
 	var speed = prevVelocity.length()
+
+	if speed < 1:
+		prevVelocity = Vector3.ZERO
+
 	if speed != 0 and not Input.is_action_pressed("move_jump"):
 		var drop = speed * sv_friction * delta
 		prevVelocity *= maxf(speed - drop, 0) / speed
@@ -34,12 +38,15 @@ static func move_air(accelDir: Vector3, prevVelocity: Vector3, delta: float) -> 
 	return accelerate(accelDir, prevVelocity, sv_airaccelerate, sv_maxairspeed, delta)
 
 static func move(accelDir: Vector3, prevVelocity: Vector3, onground: bool, delta: float) -> Vector3:
+	var vertical := move_vertical(prevVelocity, onground, delta)
+
+	var horizonal: Vector3
 	if onground:
-		return move_ground(accelDir, prevVelocity, delta) + move_vertical(prevVelocity, onground, delta)
+		horizonal = move_ground(accelDir, prevVelocity, delta)
 	else:
-		return move_air(accelDir, prevVelocity, delta) + move_vertical(prevVelocity, onground, delta)
-
-
+		horizonal = move_air(accelDir, prevVelocity, delta)
+		
+	return vertical + horizonal
 
 ##########
 const AUTO_HOP: bool = true
@@ -58,11 +65,13 @@ static func should_jump(onground: bool) -> bool:
 	else:
 		return Input.is_action_just_pressed("move_jump") and onground
 
-static func get_next_jump_velocity(onground: bool, delta: float) -> Vector3:
+static func get_next_jump_velocity(onground: bool) -> Vector3:
 	if should_jump(onground):
 		return Vector3.UP * JUMP_SPEED
 	else:
 		return Vector3.ZERO
 		
 static func move_vertical(cur_vel: Vector3, onground: bool, delta: float) -> Vector3:
-	return get_next_gravity_velocity(cur_vel, onground, delta) + get_next_jump_velocity(onground, delta)
+	var gravity_vel := get_next_gravity_velocity(cur_vel, onground, delta)
+	var jump_vel := get_next_jump_velocity(onground)
+	return gravity_vel + jump_vel
