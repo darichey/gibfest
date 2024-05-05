@@ -1,29 +1,24 @@
 extends Object
 class_name QuakeMovement
 
-#const MULTIPLIER = 1
-#const sv_friction: float = 5.2 * MULTIPLIER
-#const sv_accelerate: float = 5.6 * MULTIPLIER
-#const sv_maxspeed: float = 320 * MULTIPLIER
-#const sv_airaccelerate: float = 12 * MULTIPLIER
-#const sv_maxairspeed: float = 320 * MULTIPLIER
-
-const sv_friction: float = 4.0
-const sv_accelerate: float = 100.0
-const sv_maxspeed: float = 10.0
-const sv_airaccelerate: float = 100.0
-const sv_maxairspeed: float = 10.0
+const MULTIPLIER = 0.01905
+const sv_friction: float = 5.2 * MULTIPLIER
+const sv_accelerate: float = 5.6 * MULTIPLIER
+const sv_maxspeed: float = 320 * MULTIPLIER
+const sv_airaccelerate: float = 12 * MULTIPLIER
+const sv_maxairspeed: float = 320 * MULTIPLIER
 
 static func accelerate(accelDir: Vector3, prevVelocity: Vector3, accelerate: float, max_velocity: float, delta: float) -> Vector3:
-	prevVelocity.y = 0
-	var projVel = prevVelocity.dot(accelDir)
-	var accelVel = clampf(max_velocity - projVel, 0, accelerate * delta)
+	var projVel := prevVelocity.dot(accelDir)
+	var accelVel := accelerate * delta
+	
+	if projVel + accelVel > max_velocity:
+		accelVel = max_velocity - projVel
 	
 	return prevVelocity + accelDir * accelVel
 
 static func move_ground(accelDir: Vector3, prevVelocity: Vector3, delta: float) -> Vector3:
-	prevVelocity.y = 0
-	var speed = prevVelocity.length()
+	var speed := prevVelocity.length()
 
 	if speed < 1:
 		prevVelocity = Vector3.ZERO
@@ -40,6 +35,7 @@ static func move_air(accelDir: Vector3, prevVelocity: Vector3, delta: float) -> 
 static func move(accelDir: Vector3, prevVelocity: Vector3, onground: bool, delta: float) -> Vector3:
 	var vertical := move_vertical(prevVelocity, onground, delta)
 
+	prevVelocity.y = 0
 	var horizonal: Vector3
 	if onground:
 		horizonal = move_ground(accelDir, prevVelocity, delta)
