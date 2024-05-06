@@ -1,7 +1,8 @@
 extends Object
 class_name QuakeMovement
 
-const MULTIPLIER = 0.01905
+# const MULTIPLIER = 0.01905
+const MULTIPLIER = 10
 const sv_friction: float = 5.2 * MULTIPLIER
 const sv_accelerate: float = 5.6 * MULTIPLIER
 const sv_maxspeed: float = 320 * MULTIPLIER
@@ -19,9 +20,6 @@ static func accelerate(accelDir: Vector3, prevVelocity: Vector3, accelerate: flo
 
 static func move_ground(accelDir: Vector3, prevVelocity: Vector3, delta: float) -> Vector3:
 	var speed := prevVelocity.length()
-
-	if speed < 1:
-		prevVelocity = Vector3.ZERO
 
 	if speed != 0 and not Input.is_action_pressed("move_jump"):
 		var drop = speed * sv_friction * delta
