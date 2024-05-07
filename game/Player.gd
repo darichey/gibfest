@@ -16,28 +16,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			$Head.rotation.x = clampf($Head.rotation.x, -deg_to_rad(70), deg_to_rad(70))
 
 func _physics_process(delta: float) -> void:
-	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var wishdir := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	var fmove := Input.get_axis("move_back", "move_forward")
+	var smove := Input.get_axis("move_left", "move_right")
+
+	var forward := -transform.basis.z
+	var right := transform.basis.x
 	
-	debug_wishdir = wishdir
-	
-	velocity = QuakeMovement.move(wishdir, velocity, is_on_floor(), delta)
-	
-	# var forward = -transform.basis.z
-	# var right = transform.basis.x
-	# var forwardmove = Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
-	# var sidemove = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-		
-	# var wishvel = Vector3(
-	# 	forward.x * forwardmove * QuakeMovement.FORWARD_SPEED + right.x * sidemove * QuakeMovement.SIDE_SPEED,
-	# 	0,
-	# 	forward.z * forwardmove * QuakeMovement.FORWARD_SPEED + right.z * sidemove * QuakeMovement.SIDE_SPEED
-	# )
-	# debug_wishdir = wishvel.normalized()
-	
-	# velocity = QuakeMovement.move(velocity, forward, right, forwardmove, sidemove, is_on_floor(), delta)
-	
-	
+	velocity = QuakeMovement.move(self, velocity, fmove, smove, forward, right, is_on_floor(), delta)
 	
 	move_and_slide()
 	

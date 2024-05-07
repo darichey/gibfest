@@ -1,44 +1,73 @@
 extends Object
 class_name QuakeMovement
 
-# const MULTIPLIER = 0.01905
-const MULTIPLIER = 10
-const sv_friction: float = 5.2 * MULTIPLIER
-const sv_accelerate: float = 5.6 * MULTIPLIER
-const sv_maxspeed: float = 320 * MULTIPLIER
-const sv_airaccelerate: float = 12 * MULTIPLIER
-const sv_maxairspeed: float = 320 * MULTIPLIER
+const MULTIPLIER = 0.01905
+const FORWARD_SPEED = 200 * MULTIPLIER
+const SIDE_SPEED = 350 * MULTIPLIER
+const FRICTION = 4 * MULTIPLIER
+const STOP_SPEED = 100 * MULTIPLIER
+const MAX_SPEED = 320 * MULTIPLIER
+const ACCELERATE = 10 * MULTIPLIER
 
-static func accelerate(accelDir: Vector3, prevVelocity: Vector3, accelerate: float, max_velocity: float, delta: float) -> Vector3:
-	var projVel := prevVelocity.dot(accelDir)
-	var accelVel := accelerate * delta
+static func SV_UserFriction(velocity):
+	var speed = sqrt(velocity.x * velocity.x + velocity.z * velocity.z)
+	if speed == 0:
+		return velocity
 	
-	if projVel + accelVel > max_velocity:
-		accelVel = max_velocity - projVel
+	var control = STOP_SPEED if speed < STOP_SPEED else speed
+	var newspeed = speed - control * FRICTION
+
+	if newspeed < 0:
+		newspeed = 0
+
+	return velocity.normalized() * newspeed
+
+static func SV_Accelerate(velocity, wishdir, wishspeed):
+	var currentspeed = velocity.dot(wishdir)
+	var addspeed = wishspeed - currentspeed
+	if addspeed <= 0:
+		return velocity
+	var accelspeed = ACCELERATE * wishspeed
+	if accelspeed > addspeed:
+		accelspeed = addspeed
+
+	return velocity + wishdir * accelspeed
+
+static func SV_AirAccelerate(velocity, wishdir, wishspeed):
+	if wishspeed > 30:
+		wishspeed = 30
+	return SV_Accelerate(velocity, wishdir, wishspeed)
+
+static func SV_AirMove(player, velocity, fmove, smove, forward, right, onground):
+	var wishvel = Vector3(
+		forward.x * fmove + right.x * smove,
+		0,
+		forward.z * fmove + right.z * smove,
+	)
+
+	var wishspeed = wishvel.length()
+	var wishdir = wishvel.normalized()
 	
-	return prevVelocity + accelDir * accelVel
+	player.debug_wishdir = wishdir
 
-static func move_ground(accelDir: Vector3, prevVelocity: Vector3, delta: float) -> Vector3:
-	var speed := prevVelocity.length()
+	if wishspeed > MAX_SPEED:
+		wishvel *= MAX_SPEED / wishspeed
+		wishspeed = MAX_SPEED
 
-	if speed != 0 and not Input.is_action_pressed("move_jump"):
-		var drop = speed * sv_friction * delta
-		prevVelocity *= maxf(speed - drop, 0) / speed
-		
-	return accelerate(accelDir, prevVelocity, sv_accelerate, sv_maxspeed, delta)
-	
-static func move_air(accelDir: Vector3, prevVelocity: Vector3, delta: float) -> Vector3:
-	return accelerate(accelDir, prevVelocity, sv_airaccelerate, sv_maxairspeed, delta)
-
-static func move(accelDir: Vector3, prevVelocity: Vector3, onground: bool, delta: float) -> Vector3:
-	var vertical := move_vertical(prevVelocity, onground, delta)
-
-	prevVelocity.y = 0
-	var horizonal: Vector3
-	if onground:
-		horizonal = move_ground(accelDir, prevVelocity, delta)
+	var new_velocity = velocity
+	if onground and not Input.is_action_pressed("move_jump"):
+		new_velocity = SV_UserFriction(new_velocity)
+		new_velocity = SV_Accelerate(new_velocity, wishdir, wishspeed)
 	else:
-		horizonal = move_air(accelDir, prevVelocity, delta)
+		new_velocity = SV_AirAccelerate(new_velocity, wishdir, wishspeed)
+	
+	return new_velocity
+
+static func move(player, velocity, fmove, smove, forward, right, onground, delta):
+	var vertical := move_vertical(velocity, onground, delta)
+
+	velocity.y = 0
+	var horizonal = SV_AirMove(player, velocity, fmove * FORWARD_SPEED, smove * SIDE_SPEED, forward, right, onground)
 		
 	return vertical + horizonal
 
